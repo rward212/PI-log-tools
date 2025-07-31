@@ -6,3 +6,13 @@
 
 # Also ensure .gitignore itself is tracked
 !.gitignore
+
+# Allow tracking of dist and build directories
+!dist/
+!dist/**
+!build/
+!build/**
+
+# Allow tracking of README.md and pi_log_tools.spec
+!README.md
+!pi_log_tools.spec
