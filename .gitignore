@@ -1,0 +1,8 @@
+# Ignore everything
+*
+
+# Except for pi_log_tools.py
+!pi_log_tools.py
+
+# Also ensure .gitignore itself is tracked
+!.gitignore
