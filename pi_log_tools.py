@@ -242,8 +242,7 @@ header_pattern = re.compile(
     ^[A-Z]\s+                           # Severity
     \d{2}-\w{3}-\d{2}                   # Date
     \s\d{2}:\d{2}:\d{2}\s+              # Time
-    (.*?):(.*?):               
-    (?P<point_source>\w+)               # Point source
+    [^:]+:[^:]+:(?P<point_source>[^|]+)      # Source with colons and point source (non-greedy)
     \s+\|\s+(?P<interface_id>\d+)\s+\|  # Interface ID
     ''',
     re.VERBOSE
