@@ -111,7 +111,10 @@ class LogParser:
             r'(?:[^:]+):(?:[^:]+):' + re.escape(point_source) + r'\s+'  # Match module:point_source
             r'\|\s*' + re.escape(interface_id) + r'\s*\|\s*\d+\s+'  # Match | interface_id | number
             r'\(\d+\)\s+'  # Match (#####)
-            r'>>\s+UniInt failover: Interface in the "(Primary|Backup)" state(?:\. Communication with PI is in error\.)?.*',
+            r'>>\s+UniInt failover: (?:'
+            r'Interface in the "(Primary|Backup)" state(?:\. Communication with PI is in error\.)?'
+            r'|Interface transitioning from (Primary|Backup) to (Primary|Backup),'
+            r').*',
             re.DOTALL
         )
 
@@ -136,7 +139,9 @@ class LogParser:
         """
         match = self.pattern.search(full_message)
         if match:
-            timestamp_str, state = match.groups()
+            timestamp_str, state_in, trans_from, trans_to = match.groups()
+            # "in the X state" format uses group 1; "transitioning from X to Y" uses group 2 (the origin)
+            state = state_in if state_in else trans_from
             timestamp = datetime.strptime(timestamp_str, DATE_FORMAT)
 
             # Track the first matching state
@@ -182,36 +187,43 @@ class LogParser:
             if self.current_primary_start is not None:
                 self.primary_periods.append((self.current_primary_start, None))
 
-    def print_results(self) -> None:
+    def write_results(self, output_path: Path) -> None:
         """
-        Print the Primary state time ranges and initial state.
-        
-        This method outputs the results of the log parsing, including:
-        - Whether the interface was in Primary or Backup state at the start of the log
-        - All time periods when the interface was in Primary state
+        Write the Primary state time ranges and initial state to a file.
+
+        Args:
+            output_path: Path to the output .txt file
         """
-        print("\nPrimary State Time Ranges:")
-        sys.stdout.flush()
+        lines: List[str] = []
+        lines.append("Primary State Time Ranges:")
 
         # Check if the interface was in Primary state at the start of the log
         if self.first_match_state in [PRIMARY_STATE, BACKUP_WITH_ERROR]:
-            print("Interface was in Primary state at the beginning of the log.")
+            lines.append("Interface was in Primary state at the beginning of the log.")
         elif self.first_match_state == BACKUP_STATE:
-            print("Interface was in Backup state at the beginning of the log.")
+            lines.append("Interface was in Backup state at the beginning of the log.")
         else:
-            print("No matching failover state entries found in the log.")
-        sys.stdout.flush()
+            lines.append("No matching failover state entries found in the log.")
 
-        if self.primary_periods:
-            for start, end in self.primary_periods:
+        # Skip the first primary period if interface was primary from the start
+        periods = self.primary_periods
+        if self.first_match_state == PRIMARY_STATE and periods:
+            periods = periods[1:]
+
+        if periods:
+            for start, end in periods:
                 if end:
-                    print(f"From {start} to {end}")
+                    lines.append(f"From {start} to {end}")
                 else:
-                    print(f"From {start} to [still in Primary state at end of log]")
-                sys.stdout.flush()
-        else:
-            print("No Primary state periods found.")
-            sys.stdout.flush()
+                    lines.append(f"From {start} to [still in Primary state at end of log]")
+        elif not self.primary_periods:
+            lines.append("No Primary state periods found.")
+
+        with open(output_path, 'w', encoding='utf-8') as f:
+            f.write('\n'.join(lines) + '\n')
+
+        print('\n' + '\n'.join(lines))
+        print(f"\nResults written to {output_path}")
 
 def find_times_when_primary(log_file_path: Union[str, Path], point_source: str, interface_id: str) -> None:
     """
@@ -230,9 +242,11 @@ def find_times_when_primary(log_file_path: Union[str, Path], point_source: str, 
         PermissionError: If the log file cannot be accessed
     """
     log_file_path = get_validated_path(log_file_path)
+    script_dir = Path(__file__).resolve().parent
+    output_path = script_dir / f"{point_source}_{interface_id}_primary_periods.txt"
     parser = LogParser(point_source, interface_id)
     parser.parse_log_file(log_file_path)
-    parser.print_results()
+    parser.write_results(output_path)
 
 # ===== Functions from separate_interface_instances.py =====
 
