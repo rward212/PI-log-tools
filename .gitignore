@@ -1,18 +1,6 @@
-# Ignore everything
-*
+# Build artifacts
+*.o
+test_main.exe
 
-# Except for pi_log_tools.py
-!pi_log_tools.py
-
-# Also ensure .gitignore itself is tracked
-!.gitignore
-
-# Allow tracking of dist and build directories
-!dist/
-!dist/**
-!build/
-!build/**
-
-# Allow tracking of README.md and pi_log_tools.spec
-!README.md
-!pi_log_tools.spec
+# The built plugin DLL (src/PILogTools.dll) is intentionally tracked so the
+# plugin can be installed without compiling.

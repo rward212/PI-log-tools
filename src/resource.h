@@ -1,0 +1,8 @@
+#ifndef PILOGTOOLS_RESOURCE_H
+#define PILOGTOOLS_RESOURCE_H
+
+#define IDD_INPUT_DLG      101
+#define IDC_POINT_SOURCE   1001
+#define IDC_INTERFACE_ID   1002
+
+#endif

@@ -1,46 +1,73 @@
-# PI Message Log Tools Executable
+# PI Log Tools — Notepad++ Plugin
 
-## Overview
-This is a standalone executable version of the PI Message Log Tools application, packaged using PyInstaller. The executable contains all necessary dependencies and can be run on any Windows system without requiring Python to be installed.
+A native **C++** Notepad++ plugin that replicates the functionality of
+[`pi_log_tools.py`](https://github.com/aveva-plugins/PI-log-tools-master):
 
-## Features
-- Find time ranges when an interface was in primary state
-- Separate log messages for different interface instances
+1. **Find time ranges when an interface was in Primary state**
+2. **Separate log messages for separate interface instances**
 
-## Installation
-No installation is required. Simply copy the `pi_log_tools.exe` file to any location on your system.
+Unlike the original command-line script, this plugin runs on the **currently
+open document** in Notepad++ and writes its results into **new documents**.
 
-## Usage
-1. Double-click on `pi_log_tools.exe` or run it from the command line:
-   ```
-   .\pi_log_tools.exe
-   ```
+## Features / Usage
 
-2. The application will display a menu with the following options:
-   ```
-   What would you like to do?
-   1. Find time ranges when an interface was primary
-   2. Separate out log messages for separate interface instances
-   3. Exit
-   ```
+From the **Plugins ▸ PI Log Tools** menu:
 
-3. Select an option by entering the corresponding number (1, 2, or 3).
+| Command | Behaviour |
+|---------|-----------|
+| **Find primary time ranges...** | Prompts for a *point source* and *interface ID*, scans the current document, and opens a new tab named `PS_<id>_primary_periods` with the primary-state time ranges. |
+| **Separate log messages by interface instance** | Scans the current document and opens one new tab per interface instance (named `PS_<id>.txt`), each containing that instance's messages plus any global messages, sorted by timestamp. |
 
-4. If you select option 1 or 2, you will be prompted to enter the path to a log file.
-   - For option 1, you will also need to enter the point source and interface ID.
-   - For option 2, the application will create separate log files for each interface instance.
+The parsing logic is a faithful port of the Python original, verified to produce
+identical output on the same input.
 
-5. To exit the application, select option 3.
+To use it, open a PI Message log in Notepad++ and pick a command from the menu.
 
-## Building the Executable
-The executable was built using PyInstaller with the following command:
+## Layout
+
 ```
-pyinstaller --onefile pi_log_tools.py
+PI-log-tools-npp/
+├── include/          Notepad++ / Scintilla plugin API headers (from the NPP repo)
+├── src/
+│   ├── PILogTools.cpp   plugin entry point, menu, dialog, document I/O
+│   ├── LogParser.h/.cpp ported parsing logic (features 1 & 2)
+│   ├── dialog.rc        resource script for the point-source dialog
+│   ├── resource.h       dialog resource IDs
+│   ├── build.bat        build script (add "install" argument to deploy)
+│   ├── test_main.cpp    small console harness used to validate the parser
+│   └── sample.log       sample PI log used for validation
+└── README.md
 ```
 
-This creates a single executable file that includes all dependencies.
+## Building
 
-## Troubleshooting
-- If the executable fails to run, try running it from the command line to see any error messages.
-- Make sure you have the necessary permissions to read the log files and write to the output directory.
-- If you encounter any issues with the application, please report them to the developer.
+Requires [w64devkit](https://github.com/skeeto/w64devkit) (standalone MinGW-w64,
+no admin needed), already downloaded to `C:\Users\roger.ward\w64devkit`.
+
+```
+src\build.bat            # build PILogTools.dll only
+src\build.bat install    # build and install into Notepad++
+```
+
+The build produces a **self-contained** DLL (C++ runtime statically linked), so
+no extra DLLs are needed.
+
+## Installing / Reinstalling
+
+The plugin is installed to:
+
+```
+C:\Program Files\Notepad++\plugins\PILogTools\PILogTools.dll
+```
+
+Because that is under `Program Files`, the copy needs administrator rights
+(UAC). You can either run `build.bat install` from an elevated prompt, or copy
+`PILogTools.dll` into the `plugins\PILogTools\` folder yourself.
+
+After installing, restart Notepad++ (close it completely and reopen). The plugin
+appears under **Plugins ▸ PI Log Tools**.
+
+## Validating
+
+`test_main.cpp` runs both features on `sample.log`. Rebuild/run it the same way
+the plugin's logic was confirmed to match the original `pi_log_tools.py`.

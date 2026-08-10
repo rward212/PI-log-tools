@@ -1,0 +1,10 @@
+I 10-Aug-24 08:00:00   PI_OPC_SRV:OPC:OPC  | 1 | 12345 (54321) >> UniInt failover: Interface in the "Backup" state.
+I 10-Aug-24 09:00:00   PI_OPC_SRV:OPC:OPC  | 1 | 12345 (54322) >> UniInt failover: Interface transitioning from Backup to Primary,
+I 10-Aug-24 09:00:01   PI_OPC_SRV:OPC:OPC  | 1 | 12345 (54323) >> UniInt failover: Interface in the "Primary" state.
+I 10-Aug-24 12:00:00   PI_OPC_SRV:OPC:OPC  | 1 | 12345 (54324) >> UniInt failover: Interface transitioning from Primary to Backup,
+I 10-Aug-24 12:00:01   PI_OPC_SRV:OPC:OPC  | 1 | 12345 (54325) >> UniInt failover: Interface in the "Backup" state.
+I 10-Aug-24 14:00:00   PI_OPC_SRV:OPC:OPC  | 1 | 12345 (54326) >> UniInt failover: Interface in the "Primary" state.
+I 10-Aug-24 08:05:00   PI_OPC_SRV:OPC:OPC  | 2 | 22222 (11111) >> UniInt failover: Interface in the "Primary" state.
+I 10-Aug-24 10:00:00   Notifications:PI  | 0 | 00000 (00000) PI Data Archive is running normally
+W 10-Aug-24 11:00:00   PI_OPC_SRV:OPC:OPC  | 1 | 12345 (54327) some other warning message that spans
+    across two lines
