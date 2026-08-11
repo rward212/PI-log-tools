@@ -1,13 +1,12 @@
 # PI Log Tools — Notepad++ Plugin
 
-A native **C++** Notepad++ plugin that replicates the functionality of
-[`pi_log_tools.py`](https://github.com/aveva-plugins/PI-log-tools-master):
+A native **C++** Notepad++ plugin for analysing PI Message Logs:
 
 1. **Find time ranges when an interface was in Primary state**
 2. **Separate log messages for separate interface instances**
 
-Unlike the original command-line script, this plugin runs on the **currently
-open document** in Notepad++ and writes its results into **new documents**.
+It runs on the **currently open document** in Notepad++ and writes its results
+into **new documents**.
 
 ## Features / Usage
 
@@ -26,7 +25,6 @@ To use it, open a PI Message log in Notepad++ and pick a command from the menu.
 ## Layout
 
 ```
-PI-log-tools-npp/
 ├── include/          Notepad++ / Scintilla plugin API headers (from the NPP repo)
 ├── src/
 │   ├── PILogTools.cpp   plugin entry point, menu, dialog, document I/O
@@ -41,8 +39,12 @@ PI-log-tools-npp/
 
 ## Building
 
-Requires [w64devkit](https://github.com/skeeto/w64devkit) (standalone MinGW-w64,
-no admin needed), already downloaded to `C:\Users\roger.ward\w64devkit`.
+Requires a MinGW-w64 / GCC toolchain. [w64devkit](https://github.com/skeeto/w64devkit)
+is a convenient standalone option (no admin rights or installer needed) — just
+extract it and point `src/build.bat` at its `bin` folder.
+
+At the top of `src/build.bat`, set the `KIT` variable to your toolchain's `bin`
+directory (or add it to your `PATH`), then run:
 
 ```
 src\build.bat            # build PILogTools.dll only

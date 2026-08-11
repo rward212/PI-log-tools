@@ -3,7 +3,13 @@ setlocal
 rem Build the PI Log Tools Notepad++ plugin (requires w64devkit / MinGW-w64).
 
 set "ROOT=%~dp0.."
-set "KIT=C:\Users\roger.ward\w64devkit\w64devkit\bin"
+
+rem Point KIT at your MinGW-w64 bin folder. Set the KIT env var to override,
+rem otherwise it defaults to a standard w64devkit layout.
+if defined KIT goto :kit_ok
+set "KIT=C:\w64devkit\w64devkit\bin"
+:kit_ok
+
 set "CXX=%KIT%\g++.exe"
 set "WINDRES=%KIT%\windres.exe"
 set "INC=%ROOT%\include"
