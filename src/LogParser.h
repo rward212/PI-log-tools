@@ -55,4 +55,11 @@ bool  endsWith(const std::string& s, const std::string& suf);
 std::string trim(const std::string& s);
 std::string escapeRegex(const std::string& s);
 
+// Feature 3: join every message onto a single line. A message starts at a
+// header line ("X dd-Mon-yy HH:MM:SS ...") and runs up to (but not
+// including) the next header line; all of its continuation lines/paragraphs
+// (blank-line separated or not, ">>"-prefixed or not) are collapsed onto the
+// header's line, separated by single spaces.
+std::string joinMessagesOntoOneLine(const std::string& fullText);
+
 #endif

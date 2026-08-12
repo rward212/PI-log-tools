@@ -4,9 +4,11 @@ A native **C++** Notepad++ plugin for analysing PI Message Logs:
 
 1. **Find time ranges when an interface was in Primary state**
 2. **Separate log messages for separate interface instances**
+3. **Join messages onto one line**
 
 It runs on the **currently open document** in Notepad++ and writes its results
-into **new documents**.
+into **new documents** (except *Join messages onto one line*, which edits the
+current document in place).
 
 ## Features / Usage
 
@@ -16,6 +18,7 @@ From the **Plugins ▸ PI Log Tools** menu:
 |---------|-----------|
 | **Find primary time ranges...** | Prompts for a *point source* and *interface ID*, scans the current document, and opens a new tab named `PS_<id>_primary_periods` with the primary-state time ranges. |
 | **Separate log messages by interface instance** | Scans the current document and opens one new tab per interface instance (named `PS_<id>.txt`), each containing that instance's messages plus any global messages, sorted by timestamp. |
+| **Join messages onto one line** | Collapses every message (a header line — `X dd-Mon-yy HH:MM:SS ...` — plus everything up to the next header line, whether continuation lines start with `>>` or are just indented/blank-line-separated paragraphs) onto a single line. Edits the current document in place as a single undoable action. Started as a port of the `get_all_PI_messages_on_one_line` Notepad++ macro, then generalized to join full multi-paragraph messages, not just `>>`-prefixed continuation lines. |
 
 The parsing logic is a faithful port of the Python original, verified to produce
 identical output on the same input.

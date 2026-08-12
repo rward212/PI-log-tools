@@ -23,5 +23,8 @@ int main(int argc, char** argv)
     for (const auto& d : docs) {
         std::cout << "[ " << d.first << " ]\n" << d.second << "\n---\n";
     }
+
+    std::cout << "\n==== Feature 3: join messages onto one line ====\n";
+    std::cout << joinMessagesOntoOneLine(text);
     return 0;
 }

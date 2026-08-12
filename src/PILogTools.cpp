@@ -190,6 +190,25 @@ static void __cdecl cmdSeparate()
     }
 }
 
+static void __cdecl cmdJoinMessages()
+{
+    HWND sci = currentScintilla();
+    std::string text = getCurrentDocumentText();
+    std::string joined = joinMessagesOntoOneLine(text);
+
+    if (joined == text) {
+        ::MessageBoxW(nppData._nppHandle,
+                      L"No multi-line messages found to join.",
+                      L"PI Log Tools", MB_OK | MB_ICONINFORMATION);
+        return;
+    }
+
+    ::SendMessage(sci, SCI_BEGINUNDOACTION, 0, 0);
+    ::SendMessage(sci, SCI_SETTEXT, 0, (LPARAM)joined.c_str());
+    ::SendMessage(sci, SCI_ENDUNDOACTION, 0, 0);
+    ::SendMessage(sci, SCI_GOTOPOS, 0, 0);
+}
+
 // ---------------------------------------------------------------------------
 // Notepad++ plugin interface
 // ---------------------------------------------------------------------------
@@ -197,6 +216,7 @@ static void __cdecl cmdSeparate()
 static FuncItem funcItems[] = {
     { L"Find primary time ranges...", cmdFindPrimary, 0, false, nullptr },
     { L"Separate log messages by interface instance", cmdSeparate, 0, false, nullptr },
+    { L"Join messages onto one line", cmdJoinMessages, 0, false, nullptr },
 };
 
 static const int nbFuncItems = sizeof(funcItems) / sizeof(funcItems[0]);

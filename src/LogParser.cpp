@@ -355,3 +355,44 @@ LogParser::separateInterfaces(const std::string& fullText)
               [](const auto& a, const auto& b) { return a.first < b.first; });
     return results;
 }
+
+// --------------------------------------------------------------------------
+// Feature 3: join every message onto one line
+// --------------------------------------------------------------------------
+
+std::string joinMessagesOntoOneLine(const std::string& fullText)
+{
+    static const std::regex logLineRe("^[A-Z] \\d{2}-\\w{3}-\\d{2} \\d{2}:\\d{2}:\\d{2}");
+
+    std::vector<std::string> lines = splitLinesKeepNewline(fullText);
+    std::vector<std::string> current;
+    std::string out;
+
+    auto flush = [&]() {
+        if (current.empty())
+            return;
+        std::string msg;
+        for (const std::string& l : current) {
+            std::string t = trim(l);
+            if (t.empty())
+                continue;
+            if (!msg.empty())
+                msg += " ";
+            msg += t;
+        }
+        if (!msg.empty()) {
+            out += msg;
+            out += "\n";
+        }
+        current.clear();
+    };
+
+    for (const std::string& line : lines) {
+        if (std::regex_search(line, logLineRe))
+            flush();
+        current.push_back(line);
+    }
+    flush();
+
+    return out;
+}
