@@ -26,5 +26,8 @@ int main(int argc, char** argv)
 
     std::cout << "\n==== Feature 3: join messages onto one line ====\n";
     std::cout << joinMessagesOntoOneLine(text);
+
+    std::cout << "\n==== Feature 4: mask IP addresses ====\n";
+    std::cout << replaceIpAddresses(text);
     return 0;
 }

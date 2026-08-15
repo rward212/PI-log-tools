@@ -396,3 +396,18 @@ std::string joinMessagesOntoOneLine(const std::string& fullText)
 
     return out;
 }
+
+// --------------------------------------------------------------------------
+// Feature 4: replace IPv4 addresses with X.X.X.X
+// --------------------------------------------------------------------------
+
+std::string replaceIpAddresses(const std::string& fullText)
+{
+    // Strict IPv4 matcher: each octet must be 0-255, whole address bounded by
+    // word boundaries so "256.1.1.1" is left untouched (not matched as
+    // "56.1.1.1") and "192.168.1.1000" is not truncated to "192.168.1.100".
+    static const std::regex ipRe(
+        R"(\b(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)\b)");
+
+    return std::regex_replace(fullText, ipRe, "X.X.X.X");
+}

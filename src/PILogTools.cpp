@@ -209,6 +209,25 @@ static void __cdecl cmdJoinMessages()
     ::SendMessage(sci, SCI_GOTOPOS, 0, 0);
 }
 
+static void __cdecl cmdMaskIpAddresses()
+{
+    HWND sci = currentScintilla();
+    std::string text = getCurrentDocumentText();
+    std::string masked = replaceIpAddresses(text);
+
+    if (masked == text) {
+        ::MessageBoxW(nppData._nppHandle,
+                      L"No IP addresses found to mask.",
+                      L"PI Log Tools", MB_OK | MB_ICONINFORMATION);
+        return;
+    }
+
+    ::SendMessage(sci, SCI_BEGINUNDOACTION, 0, 0);
+    ::SendMessage(sci, SCI_SETTEXT, 0, (LPARAM)masked.c_str());
+    ::SendMessage(sci, SCI_ENDUNDOACTION, 0, 0);
+    ::SendMessage(sci, SCI_GOTOPOS, 0, 0);
+}
+
 // ---------------------------------------------------------------------------
 // Notepad++ plugin interface
 // ---------------------------------------------------------------------------
@@ -217,6 +236,7 @@ static FuncItem funcItems[] = {
     { L"Find primary time ranges...", cmdFindPrimary, 0, false, nullptr },
     { L"Separate log messages by interface instance", cmdSeparate, 0, false, nullptr },
     { L"Join messages onto one line", cmdJoinMessages, 0, false, nullptr },
+    { L"Mask IP addresses", cmdMaskIpAddresses, 0, false, nullptr },
 };
 
 static const int nbFuncItems = sizeof(funcItems) / sizeof(funcItems[0]);

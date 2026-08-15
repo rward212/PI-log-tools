@@ -6,5 +6,6 @@ I 10-Aug-24 12:00:01   PI_OPC_SRV:OPC:OPC  | 1 | 12345 (54325) >> UniInt failove
 I 10-Aug-24 14:00:00   PI_OPC_SRV:OPC:OPC  | 1 | 12345 (54326) >> UniInt failover: Interface in the "Primary" state.
 I 10-Aug-24 08:05:00   PI_OPC_SRV:OPC:OPC  | 2 | 22222 (11111) >> UniInt failover: Interface in the "Primary" state.
 I 10-Aug-24 10:00:00   Notifications:PI  | 0 | 00000 (00000) PI Data Archive is running normally
+I 10-Aug-24 10:05:00   PI_OPC_SRV:OPC:OPC  | 1 | 12345 (54328) connected to 192.168.1.100:5450 from 10.0.0.5
 W 10-Aug-24 11:00:00   PI_OPC_SRV:OPC:OPC  | 1 | 12345 (54327) some other warning message that spans
     across two lines

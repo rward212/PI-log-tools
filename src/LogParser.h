@@ -62,4 +62,8 @@ std::string escapeRegex(const std::string& s);
 // header's line, separated by single spaces.
 std::string joinMessagesOntoOneLine(const std::string& fullText);
 
+// Feature 4: replace every IPv4 address with "X.X.X.X" using the caller's
+// regex. Returns a copy of fullText with the addresses masked.
+std::string replaceIpAddresses(const std::string& fullText);
+
 #endif
